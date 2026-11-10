@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head> 
+    <meta charset="UTF-8"> <!-- Para aceitar caractere e cedilha -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Configuracao Responsividade-->
+    <title>MiAuspedagem</title>
+    <!-- Conexao Fonte Externa Google-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Quicksand:wght@500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css"> <!-- Importa o arquivo CSS-->
+</head>
+
+<body>
+    <!-- Visao do Cliente-->
+    <div id="viewCliente" class="view-section">
+        <div class="top-bar-cliente"> <!-- Botao Area do Proprietario-->
+            <button id="btnAbrirLogin" class="btn-acesso-dono">🔐 Área do Proprietário</button>
+        </div>
+
+        <main class="container" id="mainContainer"> 
+            <header class="header">
+                <h1 class="title">MiAuspedagem</h1>
+                <p class="subtitle">Reservas de Hospedagens para Cães</p>
+            </header>
+
+            <div class="pet-wrapper"> <!-- Imagem clicavel para iniciar Reserva -->
+                <button id="btnDalmata" class="image-button" aria-label="Solicitar Reserva">
+                    <img src="doggy.jpeg" alt="Cãozinho segurando a placa Solicitar Reserva" class="pet-image">
+                </button>
+            </div>
+
+            <div class="saiba-mais-container"> <!-- Botao explicativo sobre o Sistema-->
+                <span>Saiba mais sobre o MiAuspedagem!</span>
+                <button id="btnAbrirSobre" class="btn-saiba-mais">Clique aqui!</button>
+            </div>
+        </main>
+
+        <!-- Tela do Calendario (Inicia Oculto com a Classe hidden)-->
+        <section class="calendar-screen hidden" id="calendarScreen">
+            <div class="calendar-card">
+                <h2 class="calendar-title">Calendário de Reservas</h2>
+                <p class="calendar-instruction">Clique nos dias desejados para selecionar uma ou mais datas!</p>
+
+                <!-- Navegação de Meses-->
+                <div class="calendar-header-nav">
+                    <button id="btnPrevMonth" class="nav-month-btn">&lt;</button>
+                    <!-- Titulo do mes e ano atual é inserido aqui via javascript -->
+                    <span id="monthYearTitle" class="month-year-title"></span>
+                    <button id="btnNextMonth" class="nav-month-btn">&gt;</button>
+                </div>
+                <!-- Cabecalho com os dias da semana-->
+                <div class="calendar-grid" id="calendarGrid">
+                    <span class="day-header">D</span>
+                    <span class="day-header">S</span>
+                    <span class="day-header">T</span>
+                    <span class="day-header">Q</span>
+                    <span class="day-header">Q</span>
+                    <span class="day-header">S</span>
+                    <span class="day-header">S</span>
+                <!-- Os dias numericos do mês são inserido Fontes do Google-->
+                </div>
+                <!-- Significado de cada cor no calendario-->
+                <div class="calendar-legend">
+                    <div class="legend-item"><span class="dot green"></span> Disponível</div>
+                    <div class="legend-item"><span class="dot blue"></span> Selecionado</div>
+                    <div class="legend-item"><span class="dot red"></span> Reservado</div>
+                </div>
+                <!-- Mostra o resumo do texto das datas escolhidas-->
+                <div id="selectedSummary" class="selected-summary">Nenhuma data selecionada</div>
+
+                <!-- Botoes de ação do calendario-->
+                <button id="btnAvancarForm" class="submit-button" disabled>PROSSEGUIR COM AS DATAS SELECIONADAS</button>
+                <button id="btnVoltarInicio" class="back-button">← Voltar</button>
+            </div>
+        </section>
+
+        <!-- TELA DO FORMULARIO (Inicia Oculta)-->
+        <section class="form-screen hidden" id="formScreen">
+            <div class="form-card">
+                <h2 class="form-title">FORMULÁRIO DE SOLICITAÇÃO</h2>
+                <!-- Texto que exibe as datas selecionadas-->
+                <p id="selectedDateText" class="selected-date-display"></p>
+
+                <form id="bookingForm">
+                    <!-- Campo Nome do Tutor-->
+                    <div class="form-group">
+                        <label for="tutorName">Nome do Tutor</label>
+                        <input type="text" id="tutorName" required>
+                    </div>
+
+                    <!-- Campo Nome do Pet-->
+                    <div class="form-group">
+                        <label for="petName">Nome do Pet</label>
+                        <input type="text" id="petName" required>
+                    </div>
+
+                    <!-- Campo Especie do Pet-->
+                    <div class="form-group">
+                        <label for="petEspecie">Espécie do Pet</label>
+                        <input type="text" id="petEspecie" required>
+                    </div>
+
+                    <!-- Campo Telefone-->
+                    <div class="form-group">
+                        <label for="tutorPhone">Telefone (com DDD)</label>
+                        <input type="tel" id="tutorPhone" placeholder="(00) 00000-0000" required>
+                    </div>
+
+                    <!-- Campo email-->
+                    <div class="form-group">
+                        <label for="tutorEmail">E-mail</label>
+                        <input type="email" id="tutorEmail" required>
+                    </div>
+
+                    <!-- Campo CEP-->
+                    <div class="form-group">
+                        <label for="tutorCep">CEP</label>
+                        <input type="text" id="tutorCep" maxlength="9" placeholder="00000-000" required>
+                        <small id="cepError" class="cep-error hidden">CEP não encontrado</small>
+                    </div>
+
+                    <!-- Campo Endereço-->
+                    <div class="form-group">
+                        <label for="tutorAddress">Endereço</label>
+                        <input type="text" id="tutorAddress" readonly class="readonly-input"
+                            placeholder="Preenchido via CEP">
+                    </div>
+
+                    <!-- Campo Numero-->
+                    <div class="form-group">
+                        <label for="numeroEnd">Número da Residência</label>
+                        <input type="number" id="numeroEnd" required>
+                    </div>
+
+                    <!-- Campo Detalhes-->
+                    <div class="form-group">
+                        <label for="tutorDetails">DETALHES DO PET (Raça, peso, observações)</label>
+                        <textarea id="tutorDetails" rows="3"></textarea>
+                    </div>
+
+                    <!-- Botão Envio do Formulario-->
+                    <button type="submit" class="submit-button">ENVIAR SOLICITAÇÃO</button>
+                </form>
+                <!-- Botão Retorno ao calendario-->
+                <button id="btnVoltarCalendar" class="back-button">← Alterar datas selecionadas</button>
+            </div>
+        </section>
+
+        <!-- Tela de Confirmação-->
+        <section class="success-screen hidden" id="successScreen">
+            <div class="success-card">
+                <h2 class="success-title">SOLICITAÇÃO ENVIADA COM SUCESSO!</h2>
+                <div class="check-icon">✓</div>
+                <p class="success-msg">Aguarde o contato do estabelecimento para a confirmação da sua reserva.</p>
+                <!-- Botão para Reiniciar e Voltar a tela Inicial-->
+                <button id="btnNovoAgendamento" class="submit-button">Início</button>
+            </div>
+        </section>
+    </div>
+
+    <!-- JANELAS SOBREPOSTAS-->
+    <!-- Autenticação do Administrador-->
+    <div id="modalLogin" class="modal-overlay hidden">
+        <div class="login-card">
+            <h2 class="login-title">LOGIN DO PROPRIETÁRIO</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="adminUser">Usuário</label>
+                    <input
+                        type="text"
+                        id="adminUser"
+                        name="usuario"
+                        placeholder="Digite seu usuário"
+                        autocomplete="username"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="adminPassword">Senha</label>
+                    <input
+                        type="password"
+                        id="adminPassword"
+                        name="senha"
+                        placeholder="Digite sua senha"
+                        autocomplete="current-password"
+                        required
+                    >
+                </div>
+                <button type="submit" class="submit-button">ENTRAR</button>
+            </form>
+            <button id="btnCancelarLogin" class="back-button">← Cancelar</button>
+        </div>
+    </div>
+
+    <!-- Informações  de ajuda e instruções do Sistema-->
+    <div id="modalSobre" class="modal-overlay hidden">
+        <div class="modal-sobre-card">
+            <div class="modal-sobre-header">
+                <h3>Sobre as hospedagens na MiAuspedagem</h3>
+                <button id="btnFecharSobre" class="btn-close-modal">&times;</button>
+            </div>
+            <div class="modal-sobre-body">
+                <p>- Características do pet a ser hospedado:</p>
+                <ul>
+                    <li>Cães: Porte mini, pequeno e pequeno/médio porte (acima de 35 cm de altura na cernelha e 15 kg de peso só são aceitos após análise dos gatos anfitriões). Não aceitamos cães de médio/grade e grande porte.</li>
+                    <li>Gatos: Não ofertamos hospedagem para gatos, apenas petsitter.</li>
+                    <li>Outros animais: Podemos ofertar hospedagem a outras espécies de pets a depender de avaliação.</li>
+                </ul>
+                <p>- Não hospedamos animais violentos, agressivos, ou que estejam com pulgas/carrapatos ou doenças contagiosas.</p>
+                <p>- Para primeiras hospedagens/creches é exigido o pré-encontro para verificar se os pets (hóspedes e anfitriões) se dão bem e se o hóspede não apresenta sinais de desconforto no ambiente.</p>
+
+                <p>Sobre MiAuspedagem</p>
+                <ul>
+                    <li>CRECHE: limitada a 10 horas por dia e ofertada apenas aos sábados, domingos e segundas.</li>
+                    <li>MEDICAMENTOS: deverá ser previamente informado se seu pet está fazendo uso de alguma medicação e consultada a disponibilidade da Anfitriã de ministrá-los (somente em caso de medicamentos tópicos ou orais, não ministramos medicamentos injetáveis). E, caso o pet apresente comportamento agressivo para ser medicado, não realizaremos a medicação por medida de segurança.</li>
+                    <li>PETSITTER: serviços com distância superior a 5km serão analisados e haverá cobrança de valor diferenciado para a prestação dos mesmos. NÃO SERÃO ACEITAS VISITAS PARA PETS QUE OFERTEM RISCOS À PETSITTER (POR EXEMPLO: ANIMAIS VIOLENTOS, TERRITORIALISTAS, QUE NÃO ACEITEM PRESENÇA DE TERCEIROS NA CASA SEM OS TUTORES).</li>
+                    <li>TURNOS E HORÁRIOS DE VISITAS/PETSITTER:</li>
+                    <li>Sábado e domingo: Visitas disponíveis nos turnos manhã, tarde e noite, de 08h às 20h.</li>
+                    <li>Segunda à sexta: Visitas disponíveis somente no turno da noite, de 19h30 às 21h.</li>
+                </ul>
+
+                <p>Orientações de utilização do Sistema:</p>
+                <ul>
+                    <li>Você pode selecionar <strong>uma ou mais datas</strong> no calendário ao clicar nos dias
+                        disponíveis (em verde).</li>
+                    <li>Ao informar seu CEP, o sistema preenche o endereço automaticamente para agilizar a sua
+                        solicitação.</li>
+                    <li>Após o envio dos dados do tutor e do pet, o estabelecimento entrará em contato direto pelo
+                        WhatsApp para confirmar os detalhes e a reserva.</li>
+                </ul>
+            </div>
+            <div class="modal-sobre-footer">
+                <button id="btnEntendidoSobre" class="submit-button">Entendido!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAINEL DE ADMINISTRAÇÃO-->
+
+    <div id="viewDono" class="view-section hidden">
+        <div class="admin-container">
+            <div class="admin-header">
+                <h1 class="title" style="font-size: 2.3rem;">Painel do Proprietário</h1>
+                <button id="btnLogout" class="btn-logout">← Sair</button>
+            </div>
+
+            <div id="bookingList">
+                
+            </div>
+        </div>
+    </div>
+    <!-- Arquivo JavaScript-->
+    <script src="script.js"></script>
+</body>
+
+</html>
